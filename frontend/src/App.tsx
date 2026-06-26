@@ -1,56 +1,53 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FormCadastro } from './components/FormCadastro';
 import { TabelaAlunos } from './components/TabelaAlunos';
 import { IStudents } from './interface/students.interface';
-
-const MOCK_ALUNOS: IStudents[] = [
-  {
-    id: '1',
-    nome: 'Ana Carolina Souza',
-    idade: 21,
-    curso: 'Administração',
-    dataCadastro: '2024-03-10',
-  },
-  {
-    id: '2',
-    nome: 'Bruno Ferreira Lima',
-    idade: 24,
-    curso: 'Sistemas de Informação',
-    dataCadastro: '2024-04-05',
-  },
-  {
-    id: '3',
-    nome: 'Camila Rodrigues',
-    idade: 19,
-    curso: 'Gestão de TI',
-    dataCadastro: '2024-05-15',
-  },
-];
+import { useGetStudents } from './services/getStudents';
+import { useQueryClient } from '@tanstack/react-query';
+import { useDeleteStudent } from './services/deleteStudent';
+import { SnackbarComponent } from './components/Snackbar';
 
 export default function App() {
-  const [alunos, setAlunos] = useState<IStudents[]>(MOCK_ALUNOS);
+  const [showSnackbar, setShowSnackbar] = useState<{
+    open: boolean;
+    message: string;
+    type: 'success' | 'error' | 'info' | 'warning';
+  }>({
+    open: false,
+    message: '',
+    type: 'success',
+  });
+  const { data, isLoading, isError } = useGetStudents();
 
-  function handleCadastrar(nome: string, idade: number, curso: string) {
-    const novo: IStudents = {
-      id: crypto.randomUUID(),
-      nome,
-      idade,
-      curso,
-      dataCadastro: new Date().toISOString().split('T')[0],
-    };
-    setAlunos((prev) => [novo, ...prev]);
-  }
+  const queryClient = useQueryClient();
+  const { mutate: mutateDelete } = useDeleteStudent({
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['list-students'] });
+      setShowSnackbar({ open: true, message: 'Aluno deletado com sucesso', type: 'success' });
+    },
+    onError: (error) => {
+      const message = error?.response?.data?.message || 'Erro inesperado';
+      setShowSnackbar({ open: true, message, type: 'error' });
+      console.log(message);
+    },
+  });
+  const alunos = data || [];
+  const handleEditar = (updated: IStudents) => {
+    setShowSnackbar({ open: true, message: 'Aluno atualizado com sucesso', type: 'success' });
+  };
 
-  function handleEditar(updated: IStudents) {
-    setAlunos((prev) => prev.map((a) => (a.id === updated.id ? updated : a)));
-  }
-
-  function handleExcluir(id: string) {
-    setAlunos((prev) => prev.filter((a) => a.id !== id));
-  }
+  const handleDelete = (id: string) => {
+    mutateDelete(id);
+  };
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#f0f7f4' }}>
+      <SnackbarComponent
+        open={showSnackbar.open}
+        message={showSnackbar.message}
+        type={showSnackbar.type}
+        onClose={() => setShowSnackbar({ open: false, message: '', type: 'success' })}
+      />
       <header style={{ backgroundColor: '#0a2e1c' }}>
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -122,13 +119,13 @@ export default function App() {
             },
             {
               label: 'Cursos Ativos',
-              value: [...new Set(alunos.map((a) => a.curso))].length,
+              value: [...new Set(alunos.map((a) => a.course))].length,
               accent: '#e91e8c',
             },
             {
               label: 'Média de Idade',
               value: alunos.length
-                ? Math.round(alunos.reduce((s, a) => s + a.idade, 0) / alunos.length)
+                ? Math.round(alunos.reduce((s, a) => s + a.age, 0) / alunos.length)
                 : 0,
               accent: '#00c853',
             },
@@ -153,7 +150,7 @@ export default function App() {
       <main className="max-w-6xl mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-1">
-            <FormCadastro onCadastrar={handleCadastrar} />
+            <FormCadastro />
             <div
               className="mt-4 rounded-xl p-4 border-l-4 text-sm"
               style={{ backgroundColor: 'white', borderColor: '#e91e8c' }}
@@ -170,7 +167,7 @@ export default function App() {
             </div>
           </div>
           <div className="lg:col-span-2">
-            <TabelaAlunos alunos={alunos} onEditar={handleEditar} onExcluir={handleExcluir} />
+            <TabelaAlunos alunos={alunos} onEditar={handleEditar} onDelete={handleDelete} />
           </div>
         </div>
       </main>

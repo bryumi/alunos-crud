@@ -10,14 +10,14 @@ const updateStudentController = new UpdateStudentController();
 const listStudentController = new ListStudentController();
 const deleteStudentController = new DeleteStudentController();
 
-router.get('/students', (req, res) => listStudentController.findAll(req, res));
+router.get('/alunos', (req, res) => listStudentController.findAll(req, res));
 
-router.get('/students/:id', (req, res) => listStudentController.findById(req, res));
+router.get('/alunos/:id', (req, res) => listStudentController.findById(req, res));
 
-router.post('/students', (req, res) => createStudentController.create(req, res));
+router.post('/alunos', (req, res) => createStudentController.create(req, res));
 
-router.put('/students/:id', (req, res) => updateStudentController.update(req, res));
+router.put('/alunos/:id', (req, res) => updateStudentController.update(req, res));
 
-router.delete('/students/:id', (req, res) => deleteStudentController.delete(req, res));
+router.delete('/alunos/:id', (req, res) => deleteStudentController.delete(req, res));
 
 export default router;

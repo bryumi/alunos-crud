@@ -1,4 +1,5 @@
 import { IStudents } from '@/interface/students.interface';
+import { getCursoLabel } from '@/utils/coursesName';
 
 interface Props {
   aluno: IStudents;
@@ -27,16 +28,16 @@ export function ModalDetalhes({ aluno, onClose }: Props) {
           </div>
           <div className="flex items-center gap-3">
             <div
-              className="w-12 h-12 rounded-full flex items-center justify-center text-xl font-black text-[#0a2e1c]"
+              className="w-12 h-12 rounded-full flex items-center justify-center text-xl font-black text-dark"
               style={{ backgroundColor: '#00c853' }}
             >
-              {aluno.nome.charAt(0).toUpperCase()}
+              {aluno.name.charAt(0).toUpperCase()}
             </div>
             <div>
               <p className="text-white/60 text-xs uppercase tracking-widest font-semibold">
                 Perfil do Aluno
               </p>
-              <h2 className="text-white font-black text-lg leading-tight">{aluno.nome}</h2>
+              <h2 className="text-white font-black text-lg leading-tight">{aluno.name}</h2>
             </div>
           </div>
         </div>
@@ -52,11 +53,11 @@ export function ModalDetalhes({ aluno, onClose }: Props) {
                 Idade
               </p>
               <p className="text-2xl font-black" style={{ color: '#00c853' }}>
-                {aluno.idade}
+                {aluno.age}
                 <span className="text-sm font-medium text-gray-500 ml-1">anos</span>
               </p>
             </div>
-            <div className="rounded-xl p-4" style={{ backgroundColor: '#f0f7f4' }}>
+            {/* <div className="rounded-xl p-4" style={{ backgroundColor: '#f0f7f4' }}>
               <p
                 className="text-xs font-semibold uppercase tracking-widest mb-1"
                 style={{ color: '#0a2e1c' }}
@@ -66,7 +67,7 @@ export function ModalDetalhes({ aluno, onClose }: Props) {
               <p className="text-sm font-bold text-gray-700">
                 {new Date(aluno.dataCadastro).toLocaleDateString('pt-BR')}
               </p>
-            </div>
+            </div> */}
           </div>
           <div className="rounded-xl p-4" style={{ backgroundColor: '#f0f7f4' }}>
             <p
@@ -75,7 +76,7 @@ export function ModalDetalhes({ aluno, onClose }: Props) {
             >
               Curso
             </p>
-            <p className="font-bold text-gray-800">{aluno.curso}</p>
+            <p className="font-bold text-gray-800">{getCursoLabel(aluno.course)}</p>
           </div>
           <div
             className="rounded-xl p-4 border-l-4"

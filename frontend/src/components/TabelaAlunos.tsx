@@ -2,30 +2,36 @@ import { useState } from 'react';
 import { ModalDetalhes } from './ModalDetalhes';
 import { ModalEditar } from './ModalEditar';
 import { IStudents } from '@/interface/students.interface';
+import { getCursoLabel } from '@/utils/coursesName';
+import { useGetStudentById } from '@/services/getStudents';
 
 interface Props {
   alunos: IStudents[];
   onEditar: (aluno: IStudents) => void;
-  onExcluir: (id: string) => void;
+  onDelete: (id: string) => void;
 }
 
-export function TabelaAlunos({ alunos, onEditar, onExcluir }: Props) {
-  const [alunoDetalhes, setAlunoDetalhes] = useState<IStudents | null>(null);
-  const [alunoEditar, setAlunoEditar] = useState<IStudents | null>(null);
+export function TabelaAlunos({ alunos, onEditar, onDelete }: Props) {
+  const [studentDetails, setStudentDetails] = useState<IStudents | null>(null);
+  const [studentEdit, setStudentEdit] = useState<IStudents | null>(null);
   const [busca, setBusca] = useState('');
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
 
+  const {
+    data: studentSelected,
+    isLoading: isLoadingAluno,
+    isError: isErrorAluno,
+  } = useGetStudentById(studentEdit?.id || studentDetails?.id || '');
   const filtrados = alunos.filter(
     (a) =>
-      a.nome.toLowerCase().includes(busca.toLowerCase()) ||
-      a.curso.toLowerCase().includes(busca.toLowerCase()),
+      a.name.toLowerCase().includes(busca.toLowerCase()) ||
+      a.course.toLowerCase().includes(busca.toLowerCase()),
   );
 
-  function handleExcluir(id: string) {
-    onExcluir(id);
+  const handleDelete = (id: string) => {
+    onDelete(id);
     setConfirmDelete(null);
-  }
-
+  };
   return (
     <>
       <div className="rounded-2xl overflow-hidden shadow-lg bg-white">
@@ -180,15 +186,14 @@ export function TabelaAlunos({ alunos, onEditar, onExcluir }: Props) {
                             color: '#00c853',
                           }}
                         >
-                          {aluno.nome.charAt(0).toUpperCase()}
+                          {aluno.name.charAt(0).toUpperCase()}
                         </div>
-                        <span className="font-semibold text-gray-800 text-sm">{aluno.nome}</span>
+                        <span className="font-semibold text-gray-800 text-sm">{aluno.name}</span>
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       <span className="font-bold text-sm" style={{ color: '#0a2e1c' }}>
-                        {aluno.idade}{' '}
-                        <span className="font-normal text-gray-400 text-xs">anos</span>
+                        {aluno.age} <span className="font-normal text-gray-400 text-xs">anos</span>
                       </span>
                     </td>
                     <td className="px-6 py-4">
@@ -196,14 +201,14 @@ export function TabelaAlunos({ alunos, onEditar, onExcluir }: Props) {
                         className="text-xs font-semibold px-3 py-1 rounded-full"
                         style={{ backgroundColor: '#f0f7f4', color: '#0a2e1c' }}
                       >
-                        {aluno.curso}
+                        {getCursoLabel(aluno.course)}
                       </span>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-center gap-2">
                         {/* Detalhes */}
                         <button
-                          onClick={() => setAlunoDetalhes(aluno)}
+                          onClick={() => setStudentDetails(aluno)}
                           title="Ver detalhes"
                           className="w-8 h-8 rounded-lg flex items-center justify-center transition-all hover:opacity-80"
                           style={{
@@ -226,7 +231,7 @@ export function TabelaAlunos({ alunos, onEditar, onExcluir }: Props) {
                         </button>
                         {/* Editar */}
                         <button
-                          onClick={() => setAlunoEditar(aluno)}
+                          onClick={() => setStudentEdit(aluno)}
                           title="Editar aluno"
                           className="w-8 h-8 rounded-lg flex items-center justify-center transition-all hover:opacity-80"
                           style={{
@@ -250,7 +255,7 @@ export function TabelaAlunos({ alunos, onEditar, onExcluir }: Props) {
                         {confirmDelete === aluno.id ? (
                           <div className="flex items-center gap-1">
                             <button
-                              onClick={() => handleExcluir(aluno.id)}
+                              onClick={() => handleDelete(aluno.id)}
                               className="text-xs font-bold px-2 py-1 rounded-lg text-white"
                               style={{ backgroundColor: '#e91e8c' }}
                             >
@@ -299,17 +304,17 @@ export function TabelaAlunos({ alunos, onEditar, onExcluir }: Props) {
         )}
       </div>
 
-      {alunoDetalhes && (
-        <ModalDetalhes aluno={alunoDetalhes} onClose={() => setAlunoDetalhes(null)} />
+      {studentDetails && studentSelected && (
+        <ModalDetalhes aluno={studentSelected} onClose={() => setStudentDetails(null)} />
       )}
-      {alunoEditar && (
+      {studentEdit && studentSelected && (
         <ModalEditar
-          aluno={alunoEditar}
+          aluno={studentSelected}
           onSave={(a) => {
             onEditar(a);
-            setAlunoEditar(null);
+            setStudentEdit(null);
           }}
-          onClose={() => setAlunoEditar(null)}
+          onClose={() => setStudentEdit(null)}
         />
       )}
     </>

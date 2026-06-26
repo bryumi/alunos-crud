@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { ListStudentService } from '../service/ListStudentService';
+import { AppError } from '../errors/appError';
 
 const listStudentService = new ListStudentService();
 
@@ -10,9 +11,12 @@ export class ListStudentController {
 
       return res.status(200).json(students);
     } catch (error) {
-      return res.status(500).json({
-        message: 'Internal server error',
-      });
+      if (error instanceof AppError) {
+        console.log(error);
+        return res.status(error.statusCode).json({
+          message: error.message,
+        });
+      }
     }
   }
 

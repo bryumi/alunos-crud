@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { CreateStudentService } from '../service/CreateStudentService';
+import { AppError } from '../errors/appError';
 
 const createStudentService = new CreateStudentService();
 
@@ -10,8 +11,14 @@ export class CreateStudentController {
 
       return res.status(201).json(student);
     } catch (error) {
-      return res.status(400).json({
-        message: 'Error creating student',
+      if (error instanceof AppError) {
+        return res.status(error.statusCode).json({
+          message: error.message,
+        });
+      }
+
+      return res.status(500).json({
+        message: 'Erro interno do servidor',
       });
     }
   }
