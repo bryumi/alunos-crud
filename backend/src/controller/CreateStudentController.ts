@@ -1,20 +1,18 @@
 import { Request, Response } from 'express';
 import { CreateStudentService } from '../service/CreateStudentService';
 
-class CreateStudentController {
-  async handle(request: Request, response: Response) {
-    const { name, tel, email, endereco, bairro, cidade, uf } = request.body;
-    const createStudentService = new CreateStudentService();
-    const student = await createStudentService.execute({
-      name,
-      tel,
-      email,
-      endereco,
-      bairro,
-      cidade,
-      uf,
-    });
-    response.json({ message: 'Aluno cadastrado!' });
+const createStudentService = new CreateStudentService();
+
+export class CreateStudentController {
+  async create(req: Request, res: Response) {
+    try {
+      const student = await createStudentService.create(req.body);
+
+      return res.status(201).json(student);
+    } catch (error) {
+      return res.status(400).json({
+        message: 'Error creating student',
+      });
+    }
   }
 }
-export { CreateStudentController };

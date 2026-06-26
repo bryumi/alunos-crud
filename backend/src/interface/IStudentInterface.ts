@@ -1,12 +1,7 @@
 interface IStudentRequest {
-  id?: string;
+  id: string;
   name: string;
-  tel: string;
-  email: string;
-  endereco: string;
-  bairro: string;
-  cidade: string;
-  uf: string;
+  course: string;
 }
 
 export { IStudentRequest };

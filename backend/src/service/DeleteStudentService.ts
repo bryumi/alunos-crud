@@ -1,10 +1,21 @@
-class DeleteStudentService {
-  async execute(id: string) {
-    if (!id) {
-      throw new Error('Aluno não encontrado');
+import { prisma } from '../prisma/client';
+
+export class DeleteStudentService {
+  async delete(id: string) {
+    const student = await prisma.student.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!student) {
+      throw new Error('Student not found');
     }
 
-    return { message: 'Aluno deletado com sucesso' };
+    await prisma.student.delete({
+      where: {
+        id,
+      },
+    });
   }
 }
-export { DeleteStudentService };

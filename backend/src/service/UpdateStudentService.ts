@@ -1,41 +1,29 @@
-import { IStudentRequest } from '../interface/IStudentInterface';
+import { Course } from '@prisma/client';
+import { prisma } from '../prisma/client';
 
-class UpdateStudentService {
-  async execute({ id, name, tel, email, endereco, bairro, cidade, uf }: IStudentRequest) {
-    if (!email) {
-      throw new Error('Email invalido');
+interface UpdateStudentDTO {
+  name?: string;
+  course?: Course;
+  age?: number;
+}
+
+export class UpdateStudentService {
+  async update(id: string, data: UpdateStudentDTO) {
+    const student = await prisma.student.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!student) {
+      throw new Error('Student not found');
     }
-    // const studentRepository = getCustomRepository(ClientRepositories);
-    // const client = await clientRepository.findOne(id);
 
-    // if (!client) {
-    //     throw new Error ("Cliente não encontrado");
-    // }
-    // if (name) {
-    //     client.name = name;
-    // }
-    // if (tel) {
-    //     client.tel = tel;
-    // }
-    // if (email) {
-    //     client.email = email;
-    // }
-    // if (endereco) {
-    //     client.endereco = endereco;
-    // }
-    // if (bairro) {
-    //     client.bairro = bairro;
-    // }
-    // if (cidade) {
-    //     client.cidade = cidade;
-    // }
-    // if (uf) {
-    //     client.uf = uf;
-    // }
-
-    // await clientRepository.update(id || 0, client);
-
-    // return client;
+    return await prisma.student.update({
+      where: {
+        id,
+      },
+      data,
+    });
   }
 }
-export { UpdateStudentService };

@@ -1,12 +1,16 @@
-import { IStudentRequest } from '../interface/IStudentInterface';
+import { prisma } from '../prisma/client';
+import { Course } from '@prisma/client';
 
-class CreateStudentService {
-  async execute({ name, tel, email, endereco, bairro, cidade, uf }: IStudentRequest) {
-    if (!email) {
-      throw new Error('Email invalido');
-    }
+interface CreateStudentDTO {
+  name: string;
+  course: Course;
+  age: number;
+}
 
-    return { name, tel, email, endereco, bairro, cidade, uf };
+export class CreateStudentService {
+  async create(data: CreateStudentDTO) {
+    return prisma.student.create({
+      data,
+    });
   }
 }
-export { CreateStudentService };
