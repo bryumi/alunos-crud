@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import LoadingComponent from './LoadingComponent';
 
 interface Props {
   aluno: IStudents;
@@ -33,7 +34,7 @@ export function ModalEditar({ aluno, onSave, onClose }: Props) {
     },
   });
 
-  const { mutate: mutateUpdateStudent } = useUpdateStudent({
+  const { mutate: mutateUpdateStudent, isPending } = useUpdateStudent({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['list-students'] });
       onSave({
@@ -59,6 +60,7 @@ export function ModalEditar({ aluno, onSave, onClose }: Props) {
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
       style={{ backgroundColor: 'rgba(10,46,28,0.7)' }}
     >
+      {isPending && <LoadingComponent />}
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
         {errorCreate && (
           <div
@@ -185,6 +187,7 @@ export function ModalEditar({ aluno, onSave, onClose }: Props) {
             Cancelar
           </button>
           <button
+            disabled={isPending}
             onClick={handleSubmit(onSubmit)}
             className="flex-1 py-3 rounded-xl font-bold text-dark transition-all hover:opacity-90"
             style={{ backgroundColor: '#00c853' }}

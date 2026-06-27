@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import LoadingComponent from './LoadingComponent';
 
 export function FormCadastro() {
   const [success, setSuccess] = useState(false);
@@ -20,7 +21,7 @@ export function FormCadastro() {
   });
   const queryClient = useQueryClient();
 
-  const { mutate: mutateCreateStudent } = useCreateStudent({
+  const { mutate: mutateCreateStudent, isPending } = useCreateStudent({
     onSuccess: () => {
       reset({
         name: '',
@@ -44,6 +45,7 @@ export function FormCadastro() {
   };
   return (
     <div className="rounded-2xl overflow-hidden shadow-lg" style={{ backgroundColor: 'white' }}>
+      {isPending && <LoadingComponent />}
       {/* Card Header */}
       <div
         className="px-6 py-4 flex items-center gap-3"
@@ -206,6 +208,7 @@ export function FormCadastro() {
           onClick={handleSubmit(onSubmit)}
           className="w-full py-3.5 rounded-xl font-black text-sm uppercase tracking-wider transition-all hover:opacity-90 active:scale-95"
           style={{ backgroundColor: '#00c853', color: '#0a2e1c' }}
+          disabled={isPending}
         >
           Cadastrar Aluno
         </button>

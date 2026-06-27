@@ -80,14 +80,6 @@ export default function App() {
               <p className="text-white/50 text-xs">Portal Acadêmico</p>
             </div>
           </div>
-          <div className="hidden sm:flex items-center gap-4 text-white/60 text-xs font-semibold">
-            <span
-              className="px-3 py-1.5 rounded-lg font-bold"
-              style={{ backgroundColor: '#e91e8c', color: 'white' }}
-            >
-              Portal do Aluno
-            </span>
-          </div>
         </div>
       </header>
 
@@ -118,16 +110,11 @@ export default function App() {
               accent: '#00c853',
             },
             {
-              label: 'Cursos Ativos',
-              value: [...new Set(alunos.map((a) => a.course))].length,
-              accent: '#e91e8c',
-            },
-            {
               label: 'Média de Idade',
               value: alunos.length
                 ? Math.round(alunos.reduce((s, a) => s + a.age, 0) / alunos.length)
                 : 0,
-              accent: '#00c853',
+              accent: '#e91e8c',
             },
           ].map((s) => (
             <div
@@ -147,7 +134,7 @@ export default function App() {
         </div>
       </div>
 
-      <main className="max-w-6xl mx-auto px-4 py-8">
+      <main className="max-w-7xl mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-1">
             <FormCadastro />

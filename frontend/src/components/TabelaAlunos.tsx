@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ModalDetalhes } from './ModalDetalhes';
 import { ModalEditar } from './ModalEditar';
 import { IStudents } from '@/interface/students.interface';
 import { getCursoLabel } from '@/utils/coursesName';
 import { useGetStudentById } from '@/services/getStudents';
+import BasicPagination from './PaginationButtons';
 
 interface Props {
   alunos: IStudents[];
@@ -22,11 +23,21 @@ export function TabelaAlunos({ alunos, onEditar, onDelete }: Props) {
     isLoading: isLoadingAluno,
     isError: isErrorAluno,
   } = useGetStudentById(studentEdit?.id || studentDetails?.id || '');
-  const filtrados = alunos.filter(
-    (a) =>
-      a.name.toLowerCase().includes(busca.toLowerCase()) ||
-      a.course.toLowerCase().includes(busca.toLowerCase()),
-  );
+  const ITEMS_PER_PAGE = 10;
+
+  const [page, setPage] = useState(1);
+
+  const paginatedStudents = useMemo(() => {
+    const filtrados = alunos.filter(
+      (a) =>
+        a.name.toLowerCase().includes(busca.toLowerCase()) ||
+        a.course.toLowerCase().includes(busca.toLowerCase()),
+    );
+
+    const start = (page - 1) * ITEMS_PER_PAGE;
+
+    return filtrados.slice(start, start + ITEMS_PER_PAGE);
+  }, [alunos, busca, page]);
 
   const handleDelete = (id: string) => {
     onDelete(id);
@@ -98,8 +109,8 @@ export function TabelaAlunos({ alunos, onEditar, onDelete }: Props) {
         </div>
 
         {/* Table */}
-        {filtrados.length === 0 ? (
-          <div className="py-16 flex flex-col items-center gap-3">
+        {paginatedStudents.length === 0 ? (
+          <div className="py-12 flex flex-col items-center gap-3">
             <div
               className="w-16 h-16 rounded-full flex items-center justify-center"
               style={{ backgroundColor: '#f0f7f4' }}
@@ -167,27 +178,16 @@ export function TabelaAlunos({ alunos, onEditar, onDelete }: Props) {
                 </tr>
               </thead>
               <tbody>
-                {filtrados.map((aluno, i) => (
+                {paginatedStudents.map((aluno, i) => (
                   <tr
                     key={aluno.id}
                     className="border-t border-gray-100 hover:bg-gray-50 transition-colors group"
                   >
                     <td className="px-6 py-4">
-                      <span className="text-xs font-bold text-gray-400">
-                        {String(i + 1).padStart(2, '0')}
-                      </span>
+                      <span className="text-xs font-bold text-gray-400">{aluno.id}</span>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div
-                          className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-black shrink-0"
-                          style={{
-                            backgroundColor: '#0a2e1c',
-                            color: '#00c853',
-                          }}
-                        >
-                          {aluno.name.charAt(0).toUpperCase()}
-                        </div>
                         <span className="font-semibold text-gray-800 text-sm">{aluno.name}</span>
                       </div>
                     </td>
@@ -198,7 +198,7 @@ export function TabelaAlunos({ alunos, onEditar, onDelete }: Props) {
                     </td>
                     <td className="px-6 py-4">
                       <span
-                        className="text-xs font-semibold px-3 py-1 rounded-full"
+                        className="text-xs font-semibold px-3 py-1 rounded-full whitespace-nowrap"
                         style={{ backgroundColor: '#f0f7f4', color: '#0a2e1c' }}
                       >
                         {getCursoLabel(aluno.course)}
@@ -210,30 +210,33 @@ export function TabelaAlunos({ alunos, onEditar, onDelete }: Props) {
                         <button
                           onClick={() => setStudentDetails(aluno)}
                           title="Ver detalhes"
-                          className="w-8 h-8 rounded-lg flex items-center justify-center transition-all hover:opacity-80"
+                          className="w-8 h-8 rounded-lg flex items-center justify-center cursor-pointer transition-all hover:opacity-80"
                           style={{
                             backgroundColor: '#f0f7f4',
                             color: '#0a2e1c',
                           }}
                         >
                           <svg
-                            width="14"
-                            height="14"
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
                             viewBox="0 0 24 24"
                             fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2.5"
+                            stroke="#0a2e1c"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            className="lucide lucide-eye-icon lucide-eye"
                           >
-                            <circle cx="12" cy="12" r="10" />
-                            <line x1="12" y1="8" x2="12" y2="12" />
-                            <line x1="12" y1="16" x2="12.01" y2="16" />
+                            <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
+                            <circle cx="12" cy="12" r="3" />
                           </svg>
                         </button>
                         {/* Editar */}
                         <button
                           onClick={() => setStudentEdit(aluno)}
                           title="Editar aluno"
-                          className="w-8 h-8 rounded-lg flex items-center justify-center transition-all hover:opacity-80"
+                          className="w-8 h-8 cursor-pointer rounded-lg flex items-center justify-center transition-all hover:opacity-80"
                           style={{
                             backgroundColor: '#00c853',
                             color: '#0a2e1c',
@@ -256,14 +259,14 @@ export function TabelaAlunos({ alunos, onEditar, onDelete }: Props) {
                           <div className="flex items-center gap-1">
                             <button
                               onClick={() => handleDelete(aluno.id)}
-                              className="text-xs font-bold px-2 py-1 rounded-lg text-white"
+                              className="text-xs font-bold px-2 py-1 rounded-lg text-white cursor-pointer"
                               style={{ backgroundColor: '#e91e8c' }}
                             >
                               Sim
                             </button>
                             <button
                               onClick={() => setConfirmDelete(null)}
-                              className="text-xs font-bold px-2 py-1 rounded-lg bg-gray-200 text-gray-700"
+                              className="text-xs cursor-pointer font-bold px-2 py-1 rounded-lg bg-gray-200 text-gray-700"
                             >
                               Não
                             </button>
@@ -272,7 +275,7 @@ export function TabelaAlunos({ alunos, onEditar, onDelete }: Props) {
                           <button
                             onClick={() => setConfirmDelete(aluno.id)}
                             title="Excluir aluno"
-                            className="w-8 h-8 rounded-lg flex items-center justify-center transition-all hover:opacity-80"
+                            className="w-8 h-8  cursor-pointer rounded-lg flex items-center justify-center transition-all hover:opacity-80"
                             style={{
                               backgroundColor: '#fff0f7',
                               color: '#e91e8c',
@@ -302,6 +305,13 @@ export function TabelaAlunos({ alunos, onEditar, onDelete }: Props) {
             </table>
           </div>
         )}
+      </div>
+      <div className="flex justify-end mt-6">
+        <BasicPagination
+          count={Math.ceil(alunos.length / ITEMS_PER_PAGE)}
+          page={page}
+          onChange={(_, value) => setPage(value)}
+        />
       </div>
 
       {studentDetails && studentSelected && (
