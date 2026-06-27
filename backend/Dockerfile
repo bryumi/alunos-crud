@@ -8,7 +8,7 @@ RUN yarn install
 
 COPY . .
 
-RUN yarn prisma generate
+RUN yarn prisma generate --schema=./prisma/schema.prisma
 RUN yarn build
 
 EXPOSE 3001
