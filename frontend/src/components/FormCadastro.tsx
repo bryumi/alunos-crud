@@ -14,7 +14,7 @@ export function FormCadastro() {
     handleSubmit,
     reset,
     control,
-    formState: { errors, isSubmitSuccessful },
+    formState: { errors },
   } = useForm({
     resolver: zodResolver(RegisterFormSchema),
   });
@@ -66,7 +66,6 @@ export function FormCadastro() {
           </svg>
         </div>
         <div>
-          <p className="text-white/60 text-xs uppercase tracking-widest font-semibold">FECAP</p>
           <h2 className="text-white font-black text-base">Cadastrar Aluno</h2>
         </div>
       </div>
