@@ -62,7 +62,6 @@ alunos-crud/
 - Pesquisa por nome ou curso
 - Atualização de alunos
 - Exclusão de alunos
-- Paginação
 - Validação de formulários
 
 ---
