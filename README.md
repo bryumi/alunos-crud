@@ -66,6 +66,12 @@ alunos-crud/
 
 ---
 
+# Deploy do projeto
+
+```
+https://alunos-crud.netlify.app/
+```
+
 # Como executar o projeto
 
 ## Pré-requisitos
