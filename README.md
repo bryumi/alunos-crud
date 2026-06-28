@@ -69,10 +69,7 @@ alunos-crud/
 
 # Deploy do projeto
 
-```
 https://alunos-crud.netlify.app/
-
-```
 
 - backend deploy pelo Render: https://render.com/
 - frontend deploy pela Netlify: https://www.netlify.com/
