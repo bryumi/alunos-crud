@@ -84,13 +84,13 @@ export default function App() {
       </header>
 
       <div
-        className="relative overflow-hidden py-8 px-4"
+        className="relative overflow-hidden py-8 px-4 flex items-center justify-between gap-5"
         style={{
           backgroundImage: 'linear-gradient(135deg, #0d3b2e 0%, #0a2e1c 50%, #083020 100%)',
         }}
       >
-        <div className="absolute right-0 top-0 w-64 h-full opacity-10" />
-        <div className="absolute left-1/3 top-0 w-px h-full opacity-20" />
+        {/* <div className="absolute right-0 top-0 w-64 h-full opacity-10" />
+        <div className="absolute left-1/3 top-0 w-px h-full opacity-20" /> */}
         <div className="max-w-6xl mx-auto relative z-10">
           <p className="text-white/50 text-xs uppercase tracking-widest font-semibold mb-1">
             Sistema de Gestão
@@ -101,36 +101,39 @@ export default function App() {
           <p className="text-white/60 text-sm mt-1">
             Cadastre, edite e acompanhe os alunos da instituição.
           </p>
+          <div className="max-w-6xl mx-auto mt-6 grid grid-cols-3 gap-3 relative z-10">
+            {[
+              {
+                label: 'Total de Alunos',
+                value: alunos.length,
+                accent: '#00c853',
+              },
+              {
+                label: 'Média de Idade',
+                value: alunos.length
+                  ? Math.round(alunos.reduce((s, a) => s + a.age, 0) / alunos.length)
+                  : 0,
+                accent: '#e91e8c',
+              },
+            ].map((s) => (
+              <div
+                key={s.label}
+                className="rounded-xl px-4 py-3"
+                style={{
+                  backgroundColor: 'rgba(255,255,255,0.07)',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                }}
+              >
+                <p className="text-3xl font-black" style={{ color: s.accent }}>
+                  {s.value}
+                </p>
+                <p className="text-white/50 text-xs font-semibold mt-0.5">{s.label}</p>
+              </div>
+            ))}
+          </div>
         </div>
-        <div className="max-w-6xl mx-auto mt-6 grid grid-cols-3 gap-3 relative z-10">
-          {[
-            {
-              label: 'Total de Alunos',
-              value: alunos.length,
-              accent: '#00c853',
-            },
-            {
-              label: 'Média de Idade',
-              value: alunos.length
-                ? Math.round(alunos.reduce((s, a) => s + a.age, 0) / alunos.length)
-                : 0,
-              accent: '#e91e8c',
-            },
-          ].map((s) => (
-            <div
-              key={s.label}
-              className="rounded-xl px-4 py-3"
-              style={{
-                backgroundColor: 'rgba(255,255,255,0.07)',
-                border: '1px solid rgba(255,255,255,0.1)',
-              }}
-            >
-              <p className="text-3xl font-black" style={{ color: s.accent }}>
-                {s.value}
-              </p>
-              <p className="text-white/50 text-xs font-semibold mt-0.5">{s.label}</p>
-            </div>
-          ))}
+        <div className="bg-white rounded-lg max-w-62.5 mx-auto h-auto mt-8 p-4 flex items-center justify-center">
+          <img src="/img/logo-fecap.png" alt="Logo FECAP" className="" />
         </div>
       </div>
 

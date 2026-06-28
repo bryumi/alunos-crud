@@ -13,10 +13,11 @@ O sistema permite cadastrar, listar, editar, remover e pesquisar alunos de forma
 - React
 - TypeScript
 - Vite
-- Material UI (MUI)
+- Material UI
 - Axios
-- React Hooks
-- Yarn
+- TanStack React Query
+- React Hook Form
+- Zod
 
 ### Backend
 
@@ -70,7 +71,11 @@ alunos-crud/
 
 ```
 https://alunos-crud.netlify.app/
+
 ```
+
+- backend deploy pelo Render: https://render.com/
+- frontend deploy pela Netlify: https://www.netlify.com/
 
 # Como executar o projeto
 
@@ -150,6 +155,12 @@ cd frontend
 
 ```bash
 yarn
+```
+
+## Configure o arquivo `.env`
+
+```env
+VITE_API_URL=http://localhost:3001/api
 ```
 
 ## Execute
