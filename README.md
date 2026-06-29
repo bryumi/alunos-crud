@@ -109,7 +109,10 @@ docker compose up -d
 Exemplo:
 
 ```env
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/alunos?schema=public"
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=gestao_alunos
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/gestao_alunos?schema=public"
 PORT=3001
 ```
 
